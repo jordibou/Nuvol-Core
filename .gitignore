@@ -399,3 +399,10 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Sphinx
+*.venv
+docs/_build/
+
+
+guides/
