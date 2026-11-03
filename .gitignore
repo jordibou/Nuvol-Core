@@ -402,6 +402,7 @@ FodyWeavers.xsd
 
 # Sphinx
 *.venv
+*.venv-docs
 docs/_build/
 
 
