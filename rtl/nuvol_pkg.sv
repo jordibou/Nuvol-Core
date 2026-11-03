@@ -21,7 +21,7 @@ package nuvol_pkg;
 
         // Logic 
         ALU_OR,     // OR
-        ALU_AND     // AND
+        ALU_AND,     // AND
         ALU_XOR,    // XOR
 
         // Shift 
