@@ -57,7 +57,7 @@ module nuvol_alu (
             end
 
             ALU_SRL: begin
-                result_o = operand_a_i >> operand_b_i;
+                result_o = $signed(operand_a_i) >> operand_b_i;
             end
 
             ALU_SRA: begin
@@ -78,9 +78,7 @@ module nuvol_alu (
                 cmp_result_o    = 1'b0;
             end
         endcase
-        
     end
-
 
 endmodule
 
