@@ -31,7 +31,16 @@ package nuvol_pkg;
 
         // Comparison
         ALU_SLT,    // Set less than signed
-        ALU_SLTU    // Set less than unsigned
+        ALU_SLTU,    // Set less than unsigned
+
+        // Branch operations
+        ALU_EQ,
+        ALU_NE,
+        ALU_LT,
+        ALU_LTU,
+        ALU_GE,
+        ALU_GEU
+
     } alu_op_e;
 
 endpackage

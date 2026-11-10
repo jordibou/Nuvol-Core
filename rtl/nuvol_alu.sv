@@ -12,7 +12,6 @@
 //  Revision    : 0.1 | 2026-10-30 | Initial version
 //==============================================================================    
 
-import nuvol_pkg::*;
 
 module nuvol_alu (
     input   logic [31:0]    operand_a_i,
@@ -22,9 +21,10 @@ module nuvol_alu (
     output  logic           cmp_result_o
 );
 
+    import nuvol_pkg::*;
 
     always_comb begin
-
+        // Defaults
         result_o        = 32'd0;
         cmp_result_o    = 1'b0;
 
@@ -53,24 +53,26 @@ module nuvol_alu (
 
             // Shift
             ALU_SLL: begin
-                result_o = operand_a_i << operand_b_i;
+                result_o = operand_a_i << operand_b_i[4:0];
             end
 
             ALU_SRL: begin
-                result_o = $signed(operand_a_i) >> operand_b_i;
+                result_o = operand_a_i >> operand_b_i[4:0];
             end
 
             ALU_SRA: begin
-                result_o = operand_a_i >>> operand_b_i;
+                result_o = $signed(operand_a_i) >>> operand_b_i[4:0];
             end
 
             // Comparison
             ALU_SLT: begin
-                cmp_result_o = (operand_a_i < operand_b_i);
+                cmp_result_o    = ($signed(operand_a_i) < $signed(operand_b_i));
+                result_o        = {31'd0, cmp_result_o};        
             end
 
             ALU_SLTU: begin
-                cmp_result_o = (operand_a_i < operand_b_i);
+                cmp_result_o    = (operand_a_i < operand_b_i);
+                result_o        = {31'd0, cmp_result_o};        
             end
 
             default: begin
