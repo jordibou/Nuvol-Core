@@ -51,4 +51,16 @@ package nuvol_pkg;
         OPCODE_SYSTEM   = 7'b111_0011
     } opcodes_e;
 
+    // funct3 list
+    typedef enum logic [2:0] {
+        FUNCT3_ADD_SUB  = 3'b000,
+        FUNCT3_SLL      = 3'b001,
+        FUNCT3_SLT      = 3'b010,
+        FUNCT3_SLTU     = 3'b011,
+        FUNCT3_XOR      = 3'b100,
+        FUNCT3_SRL_SRA  = 3'b101,
+        FUNCT3_OR       = 3'b110,
+        FUNCT3_AND      = 3'b111
+    } funct3_e;
+
 endpackage
