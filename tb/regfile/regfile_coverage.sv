@@ -9,7 +9,7 @@ class regfile_coverage extends uvm_subscriber #(regfile_seq_item);
 
         // TP-RF-05
         cp_raddr_a: coverpoint t.raddr_a { bins regs[] = {[0:31]};}
-        cp_raddr_a: coverpoint t.raddr_a { bins regs[] = {[0:31]};}
+        cp_raddr_b: coverpoint t.raddr_b { bins regs[] = {[0:31]};}
 
         // TP-RF-03
         cp_wen:     coverpoint t.wen;
@@ -29,7 +29,10 @@ class regfile_coverage extends uvm_subscriber #(regfile_seq_item);
         }
 
         // TP-RF-05
-        cp_ports_same:  coverpoint (t.raddr_a == t.raddr_b) {bins same {1}; bins diff = {0};}
+        cp_ports_same:  coverpoint (t.raddr_a == t.raddr_b) {
+            bins same   = {1}; 
+            bins diff   = {0};
+        }
 
     endgroup
 
@@ -44,7 +47,7 @@ class regfile_coverage extends uvm_subscriber #(regfile_seq_item);
     endfunction
 
     function void report_phase(uvm_phase phase);
-        `uvm_info("COV", $sformatf("regfile coveerage = %0.2f%%", cg_regfile.get_coverage()), UVM_NONE)
+        `uvm_info("COV", $sformatf("regfile coverage = %0.2f%%", cg_regfile.get_coverage()), UVM_NONE)
     endfunction 
     
 endclass

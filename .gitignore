@@ -408,3 +408,16 @@ docs/_build/
 
 guides/
 *.pb
+/tb/regfile/xsim.dir
+
+# Vivado xsim outputs
+xsim.dir/
+xsim.covdb/
+cov_report/
+.Xil/
+*.jou
+*.log
+*.pb
+*.wdb
+*.wcfg
+webtalk*

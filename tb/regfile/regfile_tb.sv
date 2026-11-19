@@ -1,10 +1,8 @@
-module regfile_top(
-    port_list
-);
+module regfile_tb;
     
-    import uvm_package;
+    import uvm_pkg::*;
     `include "uvm_macros.svh"
-    import regfile_pkg;
+    import regfile_pkg::*;
 
 // -----------------------------------------------------------------------------------
 // Clock generation

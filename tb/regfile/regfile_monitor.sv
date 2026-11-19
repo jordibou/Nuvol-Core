@@ -1,14 +1,14 @@
     class regfile_monitor extends uvm_monitor;
         `uvm_component_utils(regfile_monitor);
     
-        virutal regfile_if vif;
+        virtual regfile_if vif;
         uvm_analysis_port #(regfile_seq_item) ap;
 
         function new(string name = "regfile_monitor", uvm_component parent);
             super.new(name, parent);
         endfunction
 
-        function void build_phase(uvm_phase);
+        function void build_phase(uvm_phase phase);
             super.build_phase(phase);
             ap = new("ap", this);
             if (!uvm_config_db#(virtual regfile_if)::get(this, "", "vif", vif))

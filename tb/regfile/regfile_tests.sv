@@ -63,3 +63,25 @@ class regfile_pattern_test extends regfile_base_test;
     endtask
 endclass
 
+class regfile_full_test extends regfile_base_test;
+    `uvm_component_utils(regfile_full_test)
+
+    function new(string name, uvm_component parent);
+        super.new(name, parent);
+    endfunction
+
+    task run_phase(uvm_phase phase);
+        regfile_fill_seq fill   = regfile_fill_seq::type_id::create("fill");
+        regfile_pattern_seq pat = regfile_pattern_seq::type_id::create("pat");
+        regfile_rand_seq rnd    = regfile_rand_seq::type_id::create("rnd");
+        phase.raise_objection(this);
+        fill.start(env.agt.sqr);
+        pat.start(env.agt.sqr);
+        rnd.n_items = 2000;
+        rnd.start(env.agt.sqr);
+        phase.drop_objection(this);
+    endtask
+endclass
+
+
+

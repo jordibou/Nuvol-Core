@@ -1,5 +1,5 @@
 package regfile_pkg;
-    import uvm_package;
+    import uvm_pkg::*;
     `include "uvm_macros.svh"
     `include "regfile_seq_item.sv"
     `include "regfile_sequences.sv"

@@ -9,11 +9,11 @@ class regfile_driver extends uvm_driver #(regfile_seq_item);
 
     function void build_phase(uvm_phase phase);
         super.build_phase(phase);
-        if(!uvm_config_db#(virtual regfile_if)::get(this, "vif", vif))
+        if(!uvm_config_db#(virtual regfile_if)::get(this,"", "vif", vif))
             `uvm_fatal("DRV", "no virtual interface found in config_db")
     endfunction
 
-    task run_phase(uvm_phase);
+    task run_phase(uvm_phase phase);
         regfile_seq_item item;
         
         vif.drv_cb.wen      <= 1'b0;

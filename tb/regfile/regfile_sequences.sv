@@ -62,7 +62,7 @@ class regfile_pattern_seq extends uvm_sequence #(regfile_seq_item);
         regfile_seq_item item;
         logic [31:0] patterns[4] = '{32'h0000_0000, 32'hFFFF_FFFF,
                                      32'hAAAA_AAAA, 32'h5555_5555};
-        foreach (patterns[p] begin) begin
+        foreach (patterns[p]) begin
             // Write phase
             for (int r = 1; r < 32; r++) begin
                 item = regfile_seq_item::type_id::create("item");
@@ -76,8 +76,8 @@ class regfile_pattern_seq extends uvm_sequence #(regfile_seq_item);
             for (int r = 1; r < 32; r+=2) begin
                 item = regfile_seq_item::type_id::create("item");
                 start_item(item);
-                if (!item.randomize() with {wen == 0; raddr_a == r; raddr_b == r + 1; })
-                    `uvm_error("SEQ", "pattern write failed")
+                if (!item.randomize() with {wen == 0; raddr_a == r; raddr_b == (r + 1) % 32; })
+                    `uvm_error("SEQ", "pattern read failed")
                 finish_item(item);
             end
         end

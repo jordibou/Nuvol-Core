@@ -12,13 +12,13 @@ class regfile_agent extends uvm_agent;
     function void build_phase(uvm_phase phase);
         super.build_phase(phase);
         sqr = regfile_sequencer ::type_id::create("sqr", this);
-        drv = regfile_driver    ::type_id::create("sqr", this);
-        mon = regfile_monitor   ::type_id::create("sqr", this);
+        drv = regfile_driver    ::type_id::create("drv", this);
+        mon = regfile_monitor   ::type_id::create("mon", this);
     endfunction
 
     function void connect_phase(uvm_phase phase);
         super.connect_phase(phase);
-        drv.seq_item_port.connect(sqr.seq_item_port);
+        drv.seq_item_port.connect(sqr.seq_item_export);
     endfunction
     
 endclass
