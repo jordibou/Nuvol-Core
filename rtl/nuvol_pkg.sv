@@ -92,6 +92,11 @@ package nuvol_pkg;
         FUNCT3_BGEU     = 3'b111;
     } funct3_e;
 
+    typedef enum logic [6:0] {
+        FUNCT7_VALID1    = 7'b000_0000,
+        FUNCT7_VALID2    = 7'b010_0000
+    } funct7_e;
+
     typedef enum logic [1:0] {
         OP_A_RS1,
         OP_A_PC,

@@ -10,7 +10,7 @@
 //                decodes its contents and outputs them.
 //    
 //------------------------------------------------------------------------------------
-//  Revision    : 0.2 | 2026-11-23 | Added decoding logic
+//  Revision    : 0.3 | 2026-11-23 | Finished the decoders
 //====================================================================================
 
 module nuvol_decoder (
@@ -21,7 +21,7 @@ module nuvol_decoder (
     output  logic [31:0]    w_addr_o,
     output  logic           wen_o,
     output  logic [31:0]    imm_o,
-    output  logic           mem_we_o,
+    output  logic           mem_wen_o,
     output  logic [1:0]     operand_a_sel_o,
     output  logic           operand_b_sel_o,
     output  logic [1:0]     wb_sel_o,
@@ -35,6 +35,7 @@ module nuvol_decoder (
 
     opcodes_e       opcode;
     funct3_e        funct3;
+    funct7_e        funct7;
     
 //------------------------------------------------------------------------------------
 // Instruction slices
@@ -99,7 +100,7 @@ module nuvol_decoder (
     always_comb begin
         // Defaults
         wen_o               = 1'b0; 
-        mem_we_o            = 1'b0; 
+        mem_wen_o            = 1'b0; 
         operand_a_sel_o     = OP_A_ZERO; 
         operand_b_sel_o     = 1'b0; 
         wb_sel_o            = WB_ALU; 
@@ -141,11 +142,33 @@ module nuvol_decoder (
             end
 
             OPCODE_MISC_MEM : begin
-
+                if (funct3 != '0) begin
+                    illegal_instr_o = 1'b1;
+                end
             end            
 
             OPCODE_OP_IMM   : begin
+                operand_a_sel_o     = OP_A_RS1;
+                operand_b_sel_o     = OP_B_IMM;
+                wen_o               = 1'b1;
+                wb_sel_o            = WB_ALU;
 
+                case (funct3)
+                    FUNCT3_SRL_SRA: begin
+                        if (!(funct7 inside {FUNCT7_VALID1, FUNCT7_VALID2})) begin
+                            illegal_instr_o = 1'b1;
+                        end
+                    end
+
+                    FUNCT3_SLL: begin
+                        if (funct7 != FUNCT7_VALID1) begin
+                            illegal_instr_o = 1'b1;
+                        end
+                    end
+                    
+                    default: ;
+
+                endcase
             end
 
             OPCODE_AUIPC    : begin
@@ -158,7 +181,7 @@ module nuvol_decoder (
             OPCODE_STORE    : begin
                 operand_a_sel_o = OP_A_RS1;
                 operand_b_sel_o = OP_B_IMM;
-                mem_we_o        = 1'b1;
+                mem_wen_o        = 1'b1;
                 wb_sel_o        = WB_MEM;
 
                 case (funct3[1:0])
@@ -179,14 +202,31 @@ module nuvol_decoder (
                     end
                 endcase
 
-                if (!(funct3 inside{FUNCT3_SB, FUNCT3_SH, FUNCT3_SW})) begin
+                if (!(funct3 inside {FUNCT3_SB, FUNCT3_SH, FUNCT3_SW})) begin
                     illegal_instr_o = 1'b1;
                 end
  
             end
 
             OPCODE_OP       : begin
+                operand_a_sel_o     = OP_A_RS1;
+                operand_b_sel_o     = OP_B_RS2;
+                wen_o               = 1'b1;
+                wb_sel_o            = WB_ALU;
 
+                case(funct3)
+                    FUNCT3_ADD_SUB, FUNCT3_SRL_SRA: begin
+                        if (!(funct7 inside {FUNCT7_VALID1, FUNCT7_VALID2})) begin
+                            illegal_instr_o = 1'b1;
+                        end
+                    end
+
+                    default: begin
+                        if (funct7 != FUNCT7_VALID1) begin
+                            illegal_instr_o = 1'b1;
+                        end 
+                    end
+                endcase
             end
 
             OPCODE_LUI      : begin
@@ -228,6 +268,7 @@ module nuvol_decoder (
             end
 
             OPCODE_SYSTEM   : begin
+                illegal_instr_o = 1'b1;
 
             end
 
@@ -235,7 +276,6 @@ module nuvol_decoder (
                 illegal_instr_o = 1'b1;
             end
         endcase
-
     end
 
 //------------------------------------------------------------------------------------
@@ -326,9 +366,5 @@ module nuvol_decoder (
         endcase
 
     end
-
-//------------------------------------------------------------------------------------
-// Illegal instruction detector
-//------------------------------------------------------------------------------------
 
 endmodule
