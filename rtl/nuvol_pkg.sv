@@ -84,12 +84,12 @@ package nuvol_pkg;
         FUNCT3_SW       = 3'b010,
 
         // Funct3 for BRANCH
-        FUNCT3_BEQ      = 3'b000;
-        FUNCT3_BNE      = 3'b001;
-        FUNCT3_BLT      = 3'b100;
-        FUNCT3_BGE      = 3'b101;
-        FUNCT3_BLTU     = 3'b110;
-        FUNCT3_BGEU     = 3'b111;
+        FUNCT3_BEQ      = 3'b000,
+        FUNCT3_BNE      = 3'b001,
+        FUNCT3_BLT      = 3'b100,
+        FUNCT3_BGE      = 3'b101,
+        FUNCT3_BLTU     = 3'b110,
+        FUNCT3_BGEU     = 3'b111
     } funct3_e;
 
     typedef enum logic [6:0] {

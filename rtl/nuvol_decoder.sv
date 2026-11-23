@@ -18,7 +18,7 @@ module nuvol_decoder (
     output  alu_op_e        alu_op_o,
     output  logic [4:0]     raddr_a_o,
     output  logic [4:0]     raddr_b_o,
-    output  logic [31:0]    w_addr_o,
+    output  logic [4:0]     w_addr_o,
     output  logic           wen_o,
     output  logic [31:0]    imm_o,
     output  logic           mem_wen_o,
@@ -27,11 +27,13 @@ module nuvol_decoder (
     output  logic [1:0]     wb_sel_o,
     output  logic           is_jump_instr_o,
     output  logic           is_branch_instr_o,
-    output  logic           byte_width_o,
+    output  logic [1:0]     byte_width_o,
     output  logic           load_unsigned_o,
     output  logic           illegal_instr_o
 
 );
+
+    import nuvol_pkg::*;
 
     opcodes_e       opcode;
     funct3_e        funct3;
@@ -42,6 +44,7 @@ module nuvol_decoder (
 //------------------------------------------------------------------------------------
     assign opcode       = instr_data_i[6:0];
     assign funct3       = instr_data_i[14:12];
+    assign funct7       = instr_data_i[31:25]
 
     // Addresses
     assign raddr_a_o    = instr_data_i[19:15];
@@ -284,7 +287,6 @@ module nuvol_decoder (
     always_comb begin
         // Default
         alu_op_o            = ALU_ADD;
-        illegal_instr_o     = 1'b0;
         
         unique case (opcode)
             // Operations with R and I types
