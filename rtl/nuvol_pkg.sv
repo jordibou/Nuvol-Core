@@ -71,6 +71,18 @@ package nuvol_pkg;
         FUNCT3_OR       = 3'b110,
         FUNCT3_AND      = 3'b111,
 
+        // Funct3 for LOAD
+        FUNCT3_LB       = 3'b000,
+        FUNCT3_LH       = 3'b001,
+        FUNCT3_LW       = 3'b010,
+        FUNCT3_LBU      = 3'b100,
+        FUNCT3_LHU      = 3'b101,
+
+        // Funct3 for STORE
+        FUNCT3_SB       = 3'b000,
+        FUNCT3_SH       = 3'b001,
+        FUNCT3_SW       = 3'b010,
+
         // Funct3 for BRANCH
         FUNCT3_BEQ      = 3'b000;
         FUNCT3_BNE      = 3'b001;

@@ -111,7 +111,33 @@ module nuvol_decoder (
 
         unique case(opcode)
             OPCODE_LOAD     : begin
+                operand_a_sel_o = OP_A_RS1;
+                operand_b_sel_o = OP_B_IMM;
+                wen_o           = 1'b1;
+                wb_sel_o        = WB_MEM;
+                load_unsigned_o = funct3[2];
 
+                case (funct3[1:0])
+                    2'b00: begin
+                        byte_width_o = BW_BYTE;
+                    end
+
+                    2'b01: begin
+                        byte_width_o = BW_HALF;
+                    end
+
+                    2'b10: begin
+                        byte_width_o = BW_WORD;
+                    end
+
+                    default: begin
+                        byte_width_o = BW_BYTE;
+                    end
+                endcase
+
+                if (!(funct3 inside{FUNCT3_LB, FUNCT3_LH, FUNCT3_LW, FUNCT3_LBU, FUNCT3_LHU})) begin
+                    illegal_instr_o = 1'b1;
+                end
             end
 
             OPCODE_MISC_MEM : begin
@@ -130,7 +156,33 @@ module nuvol_decoder (
             end
 
             OPCODE_STORE    : begin
+                operand_a_sel_o = OP_A_RS1;
+                operand_b_sel_o = OP_B_IMM;
+                mem_we_o        = 1'b1;
+                wb_sel_o        = WB_MEM;
 
+                case (funct3[1:0])
+                    2'b00: begin
+                        byte_width_o = BW_BYTE;
+                    end
+
+                    2'b01: begin
+                        byte_width_o = BW_HALF;
+                    end
+
+                    2'b10: begin
+                        byte_width_o = BW_WORD;
+                    end
+
+                    default: begin
+                        byte_width_o = BW_BYTE;
+                    end
+                endcase
+
+                if (!(funct3 inside{FUNCT3_SB, FUNCT3_SH, FUNCT3_SW})) begin
+                    illegal_instr_o = 1'b1;
+                end
+ 
             end
 
             OPCODE_OP       : begin
