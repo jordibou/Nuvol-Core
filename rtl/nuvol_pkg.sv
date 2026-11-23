@@ -80,4 +80,26 @@ package nuvol_pkg;
         FUNCT3_BGEU     = 3'b111;
     } funct3_e;
 
+    typedef enum logic [1:0] {
+        OP_A_RS1,
+        OP_A_PC,
+        OP_A_ZERO
+    } operand_a_e;
+
+    typedef enum logic {
+        OP_B_RS2,
+        OP_B_IMM
+    } operand_a_e;
+
+    typedef enum logic [1:0] {
+        WB_ALU,
+        WB_MEM,
+        WB_PC4
+    } wb_sel_e;
+
+    typedef enum logic [1:0] {
+        BW_BYTE,
+        BW_HALF,
+        BW_WORD
+    } byte_width_e;
 endpackage

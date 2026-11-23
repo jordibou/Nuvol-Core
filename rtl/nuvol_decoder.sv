@@ -10,7 +10,7 @@
 //                decodes its contents and outputs them.
 //    
 //------------------------------------------------------------------------------------
-//  Revision    : 0.1 | 2026-11-11 | Initial version
+//  Revision    : 0.2 | 2026-11-23 | Added decoding logic
 //====================================================================================
 
 module nuvol_decoder (
@@ -23,13 +23,13 @@ module nuvol_decoder (
     output  logic [31:0]    imm_o,
     output  logic           mem_we_o,
     output  logic [1:0]     operand_a_sel_o,
-    output  logic [1:0]     operand_b_sel_o,
+    output  logic           operand_b_sel_o,
     output  logic [1:0]     wb_sel_o,
     output  logic           is_jump_instr_o,
     output  logic           is_branch_instr_o,
     output  logic           byte_width_o,
     output  logic           load_unsigned_o,
-    output  logic            illegal_instr_o
+    output  logic           illegal_instr_o
 
 );
 
@@ -37,23 +37,27 @@ module nuvol_decoder (
     funct3_e        funct3;
     
 //------------------------------------------------------------------------------------
-// Helpers
+// Instruction slices
 //------------------------------------------------------------------------------------
-    assign opcode = instr_data_i[6:0];
-    assign funct3 = instr_data_i[14:12];
+    assign opcode       = instr_data_i[6:0];
+    assign funct3       = instr_data_i[14:12];
+
+    // Addresses
+    assign raddr_a_o    = instr_data_i[19:15];
+    assign raddr_b_o    = instr_data_i[24:20];
+    assign w_addr_o     = instr_data_i[11:7];
 
 //------------------------------------------------------------------------------------
 // Immediate generator
 //------------------------------------------------------------------------------------
 
+    // Immediate encoding variants
     logic [31:0]    imm_i_type;
     logic [31:0]    imm_s_type;
     logic [31:0]    imm_b_type;
     logic [31:0]    imm_u_type;
     logic [31:0]    imm_j_type;
 
-
-    
     assign imm_i_type = { {20{instr_data_i[31]}} , instr_data_i[31:20] };                       
     assign imm_s_type = { {20{instr_data_i[31]}} , instr_data_i[31:25] , instr_data_i[11:7]};
     assign imm_b_type = { {20{instr_data_i[31]}} , instr_data_i[7] , instr_data_i[30:25] , instr_data_i[11:8] , 1'b0};
@@ -93,7 +97,92 @@ module nuvol_decoder (
 // Instruction decoder
 //------------------------------------------------------------------------------------
     always_comb begin
+        // Defaults
+        wen_o               = 1'b0; 
+        mem_we_o            = 1'b0; 
+        operand_a_sel_o     = OP_A_ZERO; 
+        operand_b_sel_o     = 1'b0; 
+        wb_sel_o            = WB_ALU; 
+        is_jump_instr_o     = 1'b0; 
+        is_branch_instr_o   = 1'b0; 
+        byte_width_o        = BW_BYTE; 
+        load_unsigned_o     = 1'b0; 
+        illegal_instr_o     = 1'b0; 
 
+        unique case(opcode)
+            OPCODE_LOAD     : begin
+
+            end
+
+            OPCODE_MISC_MEM : begin
+
+            end            
+
+            OPCODE_OP_IMM   : begin
+
+            end
+
+            OPCODE_AUIPC    : begin
+                operand_a_sel_o = OP_A_PC;
+                operand_b_sel_o = OP_B_IMM;
+                wen_o           = 1'b1;
+                wb_sel_o        = WB_ALU;
+            end
+
+            OPCODE_STORE    : begin
+
+            end
+
+            OPCODE_OP       : begin
+
+            end
+
+            OPCODE_LUI      : begin
+                operand_a_sel_o     = OP_A_ZERO;
+                operand_b_sel_o     = OP_B_IMM;
+                wen_o               = 1'b1;
+                wb_sel_o            = WB_ALU;
+            end
+
+            OPCODE_BRANCH   : begin
+                operand_a_sel_o     = OP_A_RS1;
+                operand_b_sel_o     = OP_B_RS2;
+                is_branch_instr_o   = 1'b1;
+
+                if (!(funct3 inside {FUNCT3_BEQ, FUNCT3_BNE, FUNCT3_BLT, FUNCT3_BGE, FUNCT3_BLTU, FUNCT3_BGEU})) begin
+                    illegal_instr_o = 1'b1;
+                end
+                
+            end
+
+            OPCODE_JALR     : begin
+                operand_a_sel_o = OP_A_RS1;
+                operand_b_sel_o = OP_B_IMM;
+                wen_o           = 1'b1;
+                wb_sel_o        = WB_PC4;
+                is_jump_instr_o = 1'b1;
+
+                if (funct3 != '0) begin
+                    illegal_instr_o = 1'b1;
+                end
+            end
+
+            OPCODE_JAL      : begin
+                operand_a_sel_o = OP_A_PC;
+                operand_b_sel_o = OP_B_IMM;
+                wen_o           = 1'b1;
+                wb_sel_o        = WB_PC4;
+                is_jump_instr_o = 1'b1;
+            end
+
+            OPCODE_SYSTEM   : begin
+
+            end
+
+            default: begin
+                illegal_instr_o = 1'b1;
+            end
+        endcase
 
     end
 
