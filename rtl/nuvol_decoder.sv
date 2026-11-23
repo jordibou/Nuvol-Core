@@ -34,7 +34,17 @@ module nuvol_decoder (
 );
 
     opcodes_e       opcode;
-    logic [31:0]    sign_extended_imm;
+    funct3_e        funct3;
+    
+//------------------------------------------------------------------------------------
+// Helpers
+//------------------------------------------------------------------------------------
+    assign opcode = instr_data_i[6:0];
+    assign funct3 = instr_data_i[14:12];
+
+//------------------------------------------------------------------------------------
+// Immediate generator
+//------------------------------------------------------------------------------------
 
     logic [31:0]    imm_i_type;
     logic [31:0]    imm_s_type;
@@ -43,10 +53,7 @@ module nuvol_decoder (
     logic [31:0]    imm_j_type;
 
 
-    assign opcode = instr_data_i[6:0];
     
-
-
     assign imm_i_type = { {20{instr_data_i[31]}} , instr_data_i[31:20] };                       
     assign imm_s_type = { {20{instr_data_i[31]}} , instr_data_i[31:25] , instr_data_i[11:7]};
     assign imm_b_type = { {20{instr_data_i[31]}} , instr_data_i[7] , instr_data_i[30:25] , instr_data_i[11:8] , 1'b0};
@@ -82,14 +89,105 @@ module nuvol_decoder (
         endcase
     end 
 
-    // Instructions decoder
+//------------------------------------------------------------------------------------
+// Instruction decoder
+//------------------------------------------------------------------------------------
     always_comb begin
+
 
     end
 
-    // ALU decoder
+//------------------------------------------------------------------------------------
+// ALU decoder
+//------------------------------------------------------------------------------------
     always_comb begin
+        // Default
+        alu_op_o            = ALU_ADD;
+        illegal_instr_o     = 1'b0;
+        
+        unique case (opcode)
+            // Operations with R and I types
+            OPCODE_OP, OPCODE_OP_IMM: begin
+                case (funct3)
+                    FUNCT3_ADD_SUB: begin
+                        if (opcode == OPCODE_OP) begin
+                            alu_op_o = instr_data_i[30] ? ALU_SUB : ALU_ADD;
+                        end else alu_op_o = ALU_ADD;
+                    end
+
+                    FUNCT3_SLL: begin
+                        alu_op_o = ALU_SLL;
+                    end
+
+                    FUNCT3_SLT: begin
+                        alu_op_o = ALU_SLT;
+                    end
+
+                    FUNCT3_SLTU: begin
+                        alu_op_o = ALU_SLTU;
+                    end
+
+                    FUNCT3_XOR: begin
+                        alu_op_o = ALU_XOR;
+                    end
+
+                    FUNCT3_SRL_SRA: begin
+                        alu_op_o = instr_data_i[30] ? ALU_SRA : ALU_SRL;
+                    end
+
+                    FUNCT3_OR: begin
+                        alu_op_o = ALU_OR;
+                    end
+
+                    FUNCT3_AND: begin
+                        alu_op_o = ALU_AND;
+                    end
+                    
+                endcase
+
+            end
+
+            // Branch
+            OPCODE_BRANCH: begin
+                case (funct3)
+                    FUNCT3_BEQ: begin
+                        alu_op_o = ALU_BEQ;
+                    end
+
+                    FUNCT3_BNE: begin
+                        alu_op_o = ALU_BNE;
+                    end
+
+                    FUNCT3_BLT: begin
+                        alu_op_o = ALU_BLT;
+                    end
+
+                    FUNCT3_BGE: begin
+                        alu_op_o = ALU_BGE;
+                    end
+
+                    FUNCT3_BLTU: begin
+                        alu_op_o = ALU_BLTU;
+                    end
+
+                    FUNCT3_BGEU: begin
+                        alu_op_o = ALU_BGEU;
+                    end
+
+                endcase
+            end
+
+            // Rest of instructions
+            default: begin
+                alu_op_o = ALU_ADD;
+            end
+
+        endcase
 
     end
+
+//------------------------------------------------------------------------------------
+// Illegal instruction detector
+//------------------------------------------------------------------------------------
 
 endmodule

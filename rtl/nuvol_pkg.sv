@@ -22,7 +22,7 @@ package nuvol_pkg;
 
         // Logic 
         ALU_OR,     // OR
-        ALU_AND,     // AND
+        ALU_AND,    // AND
         ALU_XOR,    // XOR
 
         // Shift 
@@ -32,7 +32,15 @@ package nuvol_pkg;
 
         // Comparison
         ALU_SLT,    // Set less than signed
-        ALU_SLTU    // Set less than unsigned
+        ALU_SLTU,   // Set less than unsigned
+
+        // Branch
+        ALU_BEQ,
+        ALU_BNE,
+        ALU_BLT,
+        ALU_BGE,
+        ALU_BLTU,
+        ALU_BGEU
     } alu_op_e;
 
 
@@ -51,8 +59,9 @@ package nuvol_pkg;
         OPCODE_SYSTEM   = 7'b111_0011
     } opcodes_e;
 
-    // funct3 list
+    // Funct3 list
     typedef enum logic [2:0] {
+        // Funct3 for OP and OP-IMM
         FUNCT3_ADD_SUB  = 3'b000,
         FUNCT3_SLL      = 3'b001,
         FUNCT3_SLT      = 3'b010,
@@ -60,7 +69,15 @@ package nuvol_pkg;
         FUNCT3_XOR      = 3'b100,
         FUNCT3_SRL_SRA  = 3'b101,
         FUNCT3_OR       = 3'b110,
-        FUNCT3_AND      = 3'b111
+        FUNCT3_AND      = 3'b111,
+
+        // Funct3 for BRANCH
+        FUNCT3_BEQ      = 3'b000;
+        FUNCT3_BNE      = 3'b001;
+        FUNCT3_BLT      = 3'b100;
+        FUNCT3_BGE      = 3'b101;
+        FUNCT3_BLTU     = 3'b110;
+        FUNCT3_BGEU     = 3'b111;
     } funct3_e;
 
 endpackage
