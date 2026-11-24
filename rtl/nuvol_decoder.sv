@@ -359,6 +359,8 @@ module nuvol_decoder
                     FUNCT3_BGEU: begin
                         alu_op_o = ALU_BGEU;
                     end
+                    
+                    default: ;
 
                 endcase
             end
