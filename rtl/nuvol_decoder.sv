@@ -13,7 +13,9 @@
 //  Revision    : 0.3 | 2026-11-23 | Finished the decoders
 //====================================================================================
 
-module nuvol_decoder (
+module nuvol_decoder 
+    import nuvol_pkg::*;
+    (
     input   logic [31:0]    instr_data_i,
     output  alu_op_e        alu_op_o,
     output  logic [4:0]     raddr_a_o,
@@ -33,7 +35,6 @@ module nuvol_decoder (
 
 );
 
-    import nuvol_pkg::*;
 
    
 //------------------------------------------------------------------------------------
@@ -188,7 +189,6 @@ module nuvol_decoder (
                 operand_a_sel_o = OP_A_RS1;
                 operand_b_sel_o = OP_B_IMM;
                 mem_wen_o        = 1'b1;
-                wb_sel_o        = WB_MEM;
 
                 case (funct3[1:0])
                     2'b00: begin
