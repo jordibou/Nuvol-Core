@@ -70,7 +70,7 @@ package nuvol_pkg;
         FUNCT3_OR       = 3'b110,
         FUNCT3_AND      = 3'b111
 
-    } funct3_e;
+    } funct3_op_e;
 
     // Funct3 for LOAD
     typedef enum logic [2:0] {

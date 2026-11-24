@@ -35,16 +35,19 @@ module nuvol_decoder (
 
     import nuvol_pkg::*;
 
-    opcodes_e       opcode;
-    funct3_e        funct3;
-    funct7_e        funct7;
-    
+   
 //------------------------------------------------------------------------------------
 // Instruction slices
 //------------------------------------------------------------------------------------
+    // Signals
+    logic [6:0]         opcode;
+    logic [2:0]         funct3;
+    logic [6:0]         funct7;
+
+    // Fnction slices
     assign opcode       = instr_data_i[6:0];
     assign funct3       = instr_data_i[14:12];
-    assign funct7       = instr_data_i[31:25]
+    assign funct7       = instr_data_i[31:25];
 
     // Addresses
     assign raddr_a_o    = instr_data_i[19:15];
