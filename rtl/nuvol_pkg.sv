@@ -9,7 +9,7 @@
 //  Description :
 //    
 //------------------------------------------------------------------------------
-//  Revision    : 0.1 | 2026-10-30 | Initial version
+//  Revision    : 0.3 | 2026-10-30 | Added funct3 and funct7
 //==============================================================================    
 
 package nuvol_pkg;
@@ -59,9 +59,8 @@ package nuvol_pkg;
         OPCODE_SYSTEM   = 7'b111_0011
     } opcodes_e;
 
-    // Funct3 list
+    // Funct3 for OP and OP-IMM
     typedef enum logic [2:0] {
-        // Funct3 for OP and OP-IMM
         FUNCT3_ADD_SUB  = 3'b000,
         FUNCT3_SLL      = 3'b001,
         FUNCT3_SLT      = 3'b010,
@@ -69,28 +68,35 @@ package nuvol_pkg;
         FUNCT3_XOR      = 3'b100,
         FUNCT3_SRL_SRA  = 3'b101,
         FUNCT3_OR       = 3'b110,
-        FUNCT3_AND      = 3'b111,
+        FUNCT3_AND      = 3'b111
 
-        // Funct3 for LOAD
+    } funct3_e;
+
+    // Funct3 for LOAD
+    typedef enum logic [2:0] {
         FUNCT3_LB       = 3'b000,
         FUNCT3_LH       = 3'b001,
         FUNCT3_LW       = 3'b010,
         FUNCT3_LBU      = 3'b100,
-        FUNCT3_LHU      = 3'b101,
+        FUNCT3_LHU      = 3'b101
+    } funct3_load_e;
 
-        // Funct3 for STORE
+    // Funct3 for STORE
+    typedef enum logic [2:0] {
         FUNCT3_SB       = 3'b000,
         FUNCT3_SH       = 3'b001,
-        FUNCT3_SW       = 3'b010,
+        FUNCT3_SW       = 3'b010
+    } funct3_store_e;
 
-        // Funct3 for BRANCH
+    // Funct3 for BRANCH
+    typedef enum logic [2:0] {
         FUNCT3_BEQ      = 3'b000,
         FUNCT3_BNE      = 3'b001,
         FUNCT3_BLT      = 3'b100,
         FUNCT3_BGE      = 3'b101,
         FUNCT3_BLTU     = 3'b110,
         FUNCT3_BGEU     = 3'b111
-    } funct3_e;
+    } funct3_branch_e;
 
     typedef enum logic [6:0] {
         FUNCT7_VALID1    = 7'b000_0000,
@@ -106,7 +112,7 @@ package nuvol_pkg;
     typedef enum logic {
         OP_B_RS2,
         OP_B_IMM
-    } operand_a_e;
+    } operand_b_e;
 
     typedef enum logic [1:0] {
         WB_ALU,
@@ -119,4 +125,5 @@ package nuvol_pkg;
         BW_HALF,
         BW_WORD
     } byte_width_e;
+
 endpackage
