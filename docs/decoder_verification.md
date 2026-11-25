@@ -20,15 +20,16 @@
 
 ## 3. Test plan
 
-| ID        | Feature                                  | Stimulus            | Coverage            | Assertion          | Status |
-|---------- |------------------------------------------|---------------------|---------------------|--------------------|--------|
-| TP-DEC-01 |     |     |       |     |  |
-| TP-DEC-02 |    |     |       |     |  |
-| TP-DEC-03 |    |     |       |     |  |
-| TP-DEC-04 |    |     |       |     |  |
-| TP-DEC-05 |    |     |       |     |  |
-| TP-DEC-06 |    |     |       |     |  |
-| TP-DEC-07 |    |     |       |     |  |
+| ID        | Block | Feature                                                                                 | Stimulus            | Coverage bins       | Check           | Status |
+|---------- |-------|------------------------------------------                                               |---------------------|---------------------|--------------------|--------|
+| TP-DEC-01 | Immediate generator | Each format's immediate bits are placed in the correct `imm_o` positions  | Random              |                     | Scoreboard             |  |
+| TP-DEC-02 | Immediate generator | For I, B, S and J, the sign in the instruction is the same as `imm_o[31]` | Random              | cp_sign             | Scoreboard     |  |
+| TP-DEC-03 | Immediate generator | For I and S, the extended bits are equal to `instr_data_i[31]`            | Random              |                     | Scoreboard    |  |
+| TP-DEC-04 | Immediate generator | For B, the extended bits are equal to `instr_data_i[31]`                  | Random              |                     | Scoreboard    |  |
+| TP-DEC-05 | Immediate generator | For J, the extended bits are equal to `instr_data_i[31]`                  | Random              |                     | Scoreboard    |  |
+| TP-DEC-06 | Immediate generator | For U, the `imm_o[11:0]` must be filled with zeroes                       | Random              |                     | Assertion    |  |
+| TP-DEC-07 | Immediate generator | For B and J, the `imm_o[0]` must be zero                                  | Random              |                     | Assertion    |  |
+| TP-DEC-08 | Immediate generator | `imm_o = '0` when an instruction does not have an immediate               | Random              |                     | Assertion    |  |
 
 ## 4. Tests
 | Test                | Description                                          |
