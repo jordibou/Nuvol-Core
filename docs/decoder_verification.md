@@ -20,16 +20,23 @@
 
 ## 3. Test plan
 
-| ID        | Block | Feature                                                                                 | Stimulus            | Coverage bins       | Check           | Status |
+| ID        | Block | Feature                                                                                 | Stimulus            | Coverage bins       | Check | Status |
 |---------- |-------|------------------------------------------                                               |---------------------|---------------------|--------------------|--------|
 | TP-DEC-01 | Immediate generator | Each format's immediate bits are placed in the correct `imm_o` positions  | Random              |                     | Scoreboard             |  |
-| TP-DEC-02 | Immediate generator | For I, B, S and J, the sign in the instruction is the same as `imm_o[31]` | Random              | cp_sign             | Scoreboard     |  |
-| TP-DEC-03 | Immediate generator | For I and S, the extended bits are equal to `instr_data_i[31]`            | Random              |                     | Scoreboard    |  |
-| TP-DEC-04 | Immediate generator | For B, the extended bits are equal to `instr_data_i[31]`                  | Random              |                     | Scoreboard    |  |
-| TP-DEC-05 | Immediate generator | For J, the extended bits are equal to `instr_data_i[31]`                  | Random              |                     | Scoreboard    |  |
-| TP-DEC-06 | Immediate generator | For U, the `imm_o[11:0]` must be filled with zeroes                       | Random              |                     | Assertion    |  |
-| TP-DEC-07 | Immediate generator | For B and J, the `imm_o[0]` must be zero                                  | Random              |                     | Assertion    |  |
-| TP-DEC-08 | Immediate generator | `imm_o = '0` when an instruction does not have an immediate               | Random              |                     | Assertion    |  |
+| TP-DEC-02 | Immediate generator | For I and S, the extended bits are equal to `instr_data_i[31]`            | Random              |                     | Scoreboard    |  |
+| TP-DEC-03 | Immediate generator | For B, the extended bits are equal to `instr_data_i[31]`                  | Random              |                     | Scoreboard    |  |
+| TP-DEC-04 | Immediate generator | For J, the extended bits are equal to `instr_data_i[31]`                  | Random              |                     | Scoreboard    |  |
+| TP-DEC-05 | Immediate generator | For U, the `imm_o[11:0]` must be filled with zeroes                       | Random              |                     | Assertion    |  |
+| TP-DEC-06 | Immediate generator | For B and J, the `imm_o[0]` must be zero                                  | Random              |                     | Assertion    |  |
+| TP-DEC-07 | Immediate generator | `imm_o = '0` when an instruction is R-type or any unknown type            | Random              |                     | Assertion    |  |
+| TP-DEC-08 | Immediate generator | Edge values of the immediate are generated correctly for every format     | Directed              | cp_imm_edge         | Scoreboard   |  |
+| TP-DEC-09 | Register fields     | Each address bits are placed in the correct outputs                       | Random              |          | Scoreboard   |  |
+| TP-DEC-10 | ALU decoder         | Combination of opcode + funct3 + `instr_data_i[30]` give the correct `alu_op_o`| Random              |          | Scoreboard   |  |
+| TP-DEC-11 | ALU decoder         | When OP-IMM, if funct3== ADD and `instr_data_i[30]==1`, `alu_op_o` must be `ALU_ADD`| Directed              |          | Assertion   |  |
+| TP-DEC-12 | ALU decoder         | For OP and OP-IMM, for shift right funct3, ensure the correct alu_op_o based on `instr_data_i[30]`| Directed | | Assertion    |  |
+| TP-DEC-13 | Main decoder        | Combination of opcode + funct3 give the correct output signals            | Random | | Scoreboard    |  |
+| TP-DEC-14 | Main decoder        | Combination of opcode + funct3 + funct7 give the correct `illegal_instr_o`| Random | | Scoreboard    |  |
+| TP-DEC-15 | Main decoder        | For S and B, `wen_o` must be zero                                         | Random | | Assertion    |  |
 
 ## 4. Tests
 | Test                | Description                                          |
