@@ -1,6 +1,7 @@
 class decoder_seq_item extends uvm_sequence_item;
     // Stimulus randomized
     rand logic [31:0]   instr_data;
+    bit                 allow_illegal = 0;
 
 
     // Responses (outputs)
@@ -22,7 +23,7 @@ class decoder_seq_item extends uvm_sequence_item;
 
     // 
     constraint c_opcode {
-        instr_data[6:0] inside {OPCODE_LOAD, OPCODE_MISC_MEM, 
+        !allow_illegal ->   instr_data[6:0] inside {OPCODE_LOAD, OPCODE_MISC_MEM, 
                                 OPCODE_OP_IMM, OPCODE_AUIPC,
                                 OPCODE_STORE, OPCODE_OP,
                                 OPCODE_LUI, OPCODE_BRANCH,
