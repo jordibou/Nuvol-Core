@@ -56,54 +56,65 @@ class decoder_patt_seq extends uvm_sequence #(decoder_seq_item);
 
     task body();
         decoder_seq_item item;
-        logic [11:0] imm_patterns[4] = '{12'h000, 12'hFFF,
-                                        12'h800, 12'h7FF};
+        logic [11:0] imm_patterns_12[4] = '{12'h000, 12'hFFF,
+                                            12'h800, 12'h7FF};
 
-        foreach (imm_patterns[p]) begin
+        logic [19:0] imm_patterns_20[4] = '{20'h0_0000, 20'hF_FFFF,
+                                            20'h8_0000, 20'h7_FFFF};
+
+        // I-immediate
+        foreach (imm_patterns_12[p]) begin
             item = decoder_seq_item::type_id::create("item");
             start_item(item);
             if (!item.randomize() with {instr_data[6:0]     == OPCODE_OP_IMM; 
-                                        instr_data[31:20]   == imm_patterns[p];})
+                                        instr_data[31:20]   == imm_patterns_12[p];})
                 `uvm_error("SEQ", "immediate pattern for I-imm")            
             finish_item(item);
         end
 
-        foreach (imm_patterns[p]) begin
+        // S-immediate
+        foreach (imm_patterns_12[p]) begin
             item = decoder_seq_item::type_id::create("item");
             start_item(item);
             if (!item.randomize() with {instr_data[6:0]     == OPCODE_STORE; 
-                                        instr_data[11:7]    == imm_patterns[p][4:0];
-                                        instr_data[31:25]   == imm_patterns[p][11:5];})
+                                        instr_data[11:7]    == imm_patterns_12[p][4:0];
+                                        instr_data[31:25]   == imm_patterns_12[p][11:5];})
                 `uvm_error("SEQ", "immediate pattern for S-imm")            
             finish_item(item);
         end
  
-        foreach (imm_patterns[p]) begin
+        // B-immediate
+        foreach (imm_patterns_12[p]) begin
             item = decoder_seq_item::type_id::create("item");
             start_item(item);
             if (!item.randomize() with {instr_data[6:0]     == OPCODE_BRANCH; 
-                                        instr_data[7]       == imm_patterns[p][11];
-                                        instr_data[11:8]    == imm_patterns[p][4:1];
-                                        instr_data[30:25]   == imm_patterns[p][10:5];
-                                        instr_data[31]      == imm_patterns[p][12];})
+                                        instr_data[7]       == imm_patterns_12[p][10];
+                                        instr_data[11:8]    == imm_patterns_12[p][3:0];
+                                        instr_data[30:25]   == imm_patterns_12[p][9:4];
+                                        instr_data[31]      == imm_patterns_12[p][11];})
                 `uvm_error("SEQ", "immediate pattern for B-imm")            
             finish_item(item);
         end       
 
-        foreach (imm_patterns[p]) begin
+        // U-immediate
+        foreach (imm_patterns_20[p]) begin
             item = decoder_seq_item::type_id::create("item");
             start_item(item);
-            if (!item.randomize() with {instr_data[6:0]     == OPCODE_LUI || OPCODE_AUIPC; 
-                                        instr_data[31:20]   == imm_patterns[p];})
+            if (!item.randomize() with {instr_data[6:0]     inside { OPCODE_LUI, OPCODE_AUIPC }; 
+                                        instr_data[31:12]   == imm_patterns_20[p][19:0];})
                 `uvm_error("SEQ", "immediate pattern for U-imm")            
             finish_item(item);
         end
 
-        foreach (imm_patterns[p]) begin
+        // J-immediate
+        foreach (imm_patterns_20[p]) begin
             item = decoder_seq_item::type_id::create("item");
             start_item(item);
             if (!item.randomize() with {instr_data[6:0]     == OPCODE_JAL; 
-                                        instr_data[31:20]   == imm_patterns[p];})
+                                        instr_data[19:12]   == imm_patterns_20[p][18:11];
+                                        instr_data[20]      == imm_patterns_20[p][10];
+                                        instr_data[30:21]   == imm_patterns_20[p][9:0];
+                                        instr_data[31]      == imm_patterns_20[p][19];})
                 `uvm_error("SEQ", "immediate pattern for J-imm")            
             finish_item(item);
         end
